@@ -165,10 +165,12 @@ setxkbmap -layout us,il
 setxkbmap -option 'grp:alt_shift_toggle'
 
 # Sreen sound controls
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5% ;exec notify-send -t 200 --icon=gtk-info Volume $(pactl list sinks | grep Volume | head -n 1 | awk '{print $5}')
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5% ;exec notify-send -t 200 --icon=gtk-info Volume $(pactl list sinks | grep Volume | head -n 1 | awk '{print $5}')
+bindsym XF86AudioRaiseVolume exec /home/lior/.config/i3/volume.sh up
+bindsym XF86AudioLowerVolume exec /home/lior/.config/i3/volume.sh dn
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle ; exec notify-send -t 200 --icon=gtk-info Volume Mute
 
 # Sreen brightness controls
-bindsym XF86MonBrightnessUp exec echo "1.5*$(cat /sys/class/backlight/intel_backlight/brightness)+1" | bc | perl -nl -MPOSIX -e 'print floor($_)' | tee /sys/class/backlight/intel_backlight/brightness # increase screen brightness
+bindsym XF86MonBrightnessUp  exec echo "1.5*$(cat /sys/class/backlight/intel_backlight/brightness)+1" | bc | perl -nl -MPOSIX -e 'print floor($_)' | tee /sys/class/backlight/intel_backlight/brightness # increase screen brightness
 bindsym XF86MonBrightnessDown exec echo "0.75*$(cat /sys/class/backlight/intel_backlight/brightness)" | bc | perl -nl -MPOSIX -e 'print floor($_)' | tee /sys/class/backlight/intel_backlight/brightness # decrease screen brightness
+
+bindsym $mod+y exec /home/lior/.config/i3/headphones.sh
