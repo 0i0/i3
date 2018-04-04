@@ -169,5 +169,5 @@ bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5% ;exec
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle ; exec notify-send -t 200 --icon=gtk-info Volume Mute
 
 # Sreen brightness controls
-bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
+bindsym XF86MonBrightnessUp exec echo "1.5*$(cat /sys/class/backlight/intel_backlight/brightness)+1" | bc | perl -nl -MPOSIX -e 'print floor($_)' | tee /sys/class/backlight/intel_backlight/brightness # increase screen brightness
+bindsym XF86MonBrightnessDown exec echo "0.75*$(cat /sys/class/backlight/intel_backlight/brightness)" | bc | perl -nl -MPOSIX -e 'print floor($_)' | tee /sys/class/backlight/intel_backlight/brightness # decrease screen brightness
