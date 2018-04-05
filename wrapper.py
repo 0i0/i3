@@ -32,8 +32,8 @@ import subprocess
 def get_gpu_text():
     util = subprocess.Popen(['nvidia-settings', '-t','-q','[gpu:0]/GPUUtilization'], stdout=subprocess.PIPE).communicate()[0]
     temp = subprocess.Popen(['nvidia-settings', '-t','-q','[gpu:0]/GPUCoreTemp'], stdout=subprocess.PIPE).communicate()[0]
-    util_split = util.strip().split(',')
-    return '<span color="#BBBBBB">GPU:</span>{}% {}°'.format(util_split[0].split('=')[1],temp.strip())
+    util = util.strip().split(',')[0].split('=')[1]
+    return '<span color="#BBBBBB">GPU:</span>{util:02d}% {temp:02d}°'.format(util=int(util),temp=int(temp.strip()))
 
 def get_cpu_text():
     temp = subprocess.Popen(['sensors'], stdout=subprocess.PIPE).communicate()[0]
