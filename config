@@ -161,8 +161,8 @@ bindsym $mod+Return exec i3-sensible-terminal
 # MSI GS36VR Ubuntu i3 config
 
 # Sreen language input
-setxkbmap -layout us,il
-setxkbmap -option 'grp:alt_shift_toggle'
+exec setxkbmap -layout us,il
+exec setxkbmap -option 'grp:alt_shift_toggle'
 
 # Sreen sound controls
 bindsym XF86AudioRaiseVolume exec /home/lior/.config/i3/volume.sh up
