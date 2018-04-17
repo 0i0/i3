@@ -28,6 +28,7 @@
 import sys
 import json
 import subprocess
+from signal import signal, SIGTERM, SIGUSR1, SIGTSTP, SIGCONT, SIGIO
 
 def get_gpu_text():
     util = subprocess.Popen(['nvidia-settings', '-t','-q','[gpu:0]/GPUUtilization'], stdout=subprocess.PIPE).communicate()[0]
@@ -63,37 +64,76 @@ def read_line():
     except KeyboardInterrupt:
         sys.exit()
 
+def handle_signal(self, signum, frame):
+    # print_line(read_line())
+    print('test')
+
 if __name__ == '__main__':
     # Skip the first line which contains the version header.
-    print_line(read_line())
+    # signal(SIGTSTP, self.i3bar_stop)
+    # # SIGCONT indicates output should be resumed.
+    # signal(SIGCONT, self.i3bar_start)
+    signal(SIGIO,handle_signal)
+    header = read_line()
+
+    new_header = {
+        'version': 1,
+        'click_events': True
+    }
+    print_line(json.dumps(new_header))
 
     # The second line contains the start of the infinite array.
     print_line(read_line())
-
     while True:
         line, prefix = read_line(), ''
         # ignore comma at start of lines
+        
         if line.startswith(','):
             line, prefix = line[1:], ','
 
         j = json.loads(line)
         # insert information into the start of the json, but could be anywhere
-        # CHANGE THIS LINE TO INSERT SOMETHING ELSE
+        
+        cpuusage = ''
+        for child in j:
+             
+            if child['name'] == 'wireless':
+                text = child['full_text']
+                child['border'] = '#89DDFF'
+                child['full_text'] = '{} {}'.format(text.encode('utf-8'),get_networkspeed())
+
+            if child['name'] == 'cpu_usage':
+                cpuusage = child['full_text']
+
+            if child['name'] == 'volume':
+                child['border'] = '#FF5370'
+ 
+            if child['name'] == 'battery':
+                child['border'] = '#C792EA'
+
+            if child['name'] == 'tztime':
+                child['border'] = '#F78C6C'
+
+        del j[0]
+        # subprocess.call(['notify-send','f {}'.format(cpu_usage)])
         j.insert(0, {
-            'full_text':get_cpu_text(),
+            'full_text':"{} {}".format(get_cpu_text(),cpuusage),
             'name': 'cpu',
-            'markup':'pango'
+            'markup':'pango',
+            'border': '#ffb63c'
+            
         })
         j.insert(0, {
             'full_text':get_gpu_text(),
             'name': 'gpu',
-            'markup':'pango'
+            'markup':'pango',
+            'border': '#91B859'
         })
-        j.insert(0, {
-            'full_text':get_networkspeed(),
-            'name': 'network',
-            'markup':'pango'
-        })
-        # j.insert(4, {'full_text': '%s' % get_governor(), 'name': 'gov'})
+        for child in j:
+            child['border_bottom'] = 3
+            child['border_left'] = 0
+            child['border_right'] = 0
+            child['border_top'] = 0
         # and echo back new encoded json
-        print_line(prefix+json.dumps(j))
+        print_line('{}{}'.format(prefix,json.dumps(j)))
+
