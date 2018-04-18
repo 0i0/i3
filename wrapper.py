@@ -134,6 +134,7 @@ if __name__ == '__main__':
             child['border_left'] = 0
             child['border_right'] = 0
             child['border_top'] = 0
+            child['separator'] = False
         # and echo back new encoded json
         print_line('{}{}'.format(prefix,json.dumps(j)))
 
